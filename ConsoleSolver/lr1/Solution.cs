@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.ConstrainedExecution;
+using System.Runtime.ExceptionServices;
 using ConsoleTables;
 
 public class Solution
@@ -16,12 +17,17 @@ public class Solution
         closureGenerator = new ClosureGenerator(this);
     }
 
+    public Dictionary<Symbol, HashSet<Symbol>> First = [];
+    public Dictionary<Symbol, HashSet<Symbol>> Follow = [];
+
     public ClosureResult Launch(int startRuleIndex)
     {
         NonTerminals.UnionWith(Rules.Select(x => x.Left));
         NonTerminals.UnionWith(Rules.SelectMany(x => x.Right).Where(x => !x.IsTerminal));
         Terminals.UnionWith(Rules.SelectMany(x => x.Right).Where(x => x.IsTerminal));
         Terminals.Add('#');
+
+        GenFirstAndFollow();
 
         var start = Rules[startRuleIndex];
         var startItem = Item.FromRule(start);
@@ -44,8 +50,12 @@ public class Solution
                 {
                     Closures.Add(newClosure);
                     ClosureToName.Add(newClosure, "I" + (Closures.Count - 1));
-                    closure.Transitions.Add((symbol, newClosure));
+                } 
+                else 
+                {
+                    newClosure = Closures.First(c => c.Equals(closure));
                 }
+                closure.Transitions.Add((symbol, newClosure));
             }
         }
 
@@ -65,6 +75,88 @@ public class Solution
             NonTerminals = NonTerminals,
             Terminals = Terminals
         };
+    }
+
+    private void GenFirstAndFollow()
+    {
+        foreach (var symbol in NonTerminals)
+        {
+            First.Add(symbol, new());
+            Follow.Add(symbol, new());
+        }
+
+        // gen first phase 1
+        foreach (var symbol in NonTerminals)
+        {
+            var targets = Rules.Where(rule => rule.Left.Equals(symbol))
+                .Where(rule => rule.Right.First().IsTerminal)
+                .Select(rule => rule.Right.First());
+            var set = First[symbol];
+            set.UnionWith(targets);
+        }
+
+        // gen first phase 2
+        bool changed = false;
+        do
+        {
+            changed = false;
+            foreach (var symbol in NonTerminals)
+            {
+                var set = First[symbol];
+                var affectors = from rule in Rules
+                                where rule.Left.Equals(symbol) && 
+                                    !rule.Right.First().IsTerminal && 
+                                    !rule.Right.First().Equals(symbol)
+                                select rule.Right.First();
+                foreach (var affector in affectors)
+                {
+                    var before = set.Count;
+                    set.UnionWith(First[affector]);
+                    if (set.Count != before)
+                    {
+                        changed = true;
+                    }
+                }
+            }
+        } while (changed);
+
+        // gen follow
+        do
+        {
+            foreach (var symbol in NonTerminals)
+            {
+                var set = Follow[symbol];
+                var rules = from rule in Rules
+                            where rule.Right.Contains(symbol)
+                            select rule;
+                foreach (var rule in rules)
+                {
+                    var index = rule.Right.IndexOf(symbol);
+                    if (index == rule.Right.Count - 1)
+                    {
+                        var before = set.Count;
+                        set.UnionWith(Follow[rule.Left]);
+                        changed = set.Count != before;
+                    }
+                    else
+                    {
+                        var nextSymbol = rule.Right[index + 1];
+                        if (nextSymbol.IsTerminal)
+                        {
+                            set.Add(nextSymbol);
+                        }
+                        else
+                        {
+                            var before = Follow[symbol].Count;
+                            set.UnionWith(First[nextSymbol]);
+                            changed = set.Count != before;
+                        }
+                    }
+                }
+            }
+        } while (changed);
+        
+        return;
     }
 }
 
@@ -168,16 +260,24 @@ public class ClosureGenerator
         HashSet<Item> set = new(items);
         while (true)
         {
-            var newSet = (
+            var query1 = (
                 from item in set
                 join rule in Context.Rules on item.NextSymbol equals rule.Left
+                where item.RemainingSymbols == 1 || item.Peek(1).IsTerminal
                 select new Item() 
                 {
                     BaseRule = rule,
                     DotAt = 0,
                     Condition = item.RemainingSymbols == 1 ? item.Condition : item.Peek(1)
                 }
-            ).Union(set).ToHashSet();
+            ).Union(set);
+
+            var firsts = from item in set
+                         join rule in Context.Rules on item.NextSymbol equals rule.Left
+                         where item.RemainingSymbols >= 2 && !item.Peek(1).IsTerminal
+                         select Context.First[item.Peek(1)].Select(symbol => new Item(rule, 0, symbol));
+
+            var newSet = query1.Union(firsts.SelectMany(x => x)).ToHashSet();
 
             if (newSet.SetEquals(set))
             {
@@ -231,11 +331,10 @@ public class AnalyzeTableGenerator
             {
                 throw new Exception("Rule not found: " + item.BaseRule);
             }
-            AddToTable((closure, item.Condition), new()
-            {
-                ActionType = Action.Type.Reduce,
-                Index = matchingRuleIndex
-            });
+            Action actionToAdd = matchingRuleIndex == this.closureResult.StartRuleIndex ?
+                new() { ActionType = Action.Type.Accept, Index = -1 } :
+                new() { ActionType = Action.Type.Reduce, Index = matchingRuleIndex };
+            AddToTable((closure, item.Condition), actionToAdd);
         }
     }
 

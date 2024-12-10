@@ -1,0 +1,187 @@
+# See https://aka.ms/vscode-gitignore for the latest versions and examples.
+ 
+# Visual Studio temporary files, build results, and component model cache files
+GeneratedFiles/
+ipch/
+bin/
+obj/
+ 
+# Visual Studio cache files
+.vs/
+ 
+# NUGET
+packages/
+ 
+# Build results of dynamic web projects
+*_wpfcache/
+ 
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+ 
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.ReSharper
+*.DotSettings
+ 
+# NCrunch
+*.ncrunch*
+nCrunchTemp_*/
+ 
+# MSTest test results
+[Tt]est[Rr]esult*
+ 
+# Visual Studio Code files
+.vscode/*
+!*.vscode/extensions.json
+ 
+# Visual Studio Code test runner code coverage cache files
+*.corecoverage
+ 
+# Chutzpah Test files
+_Chutzpah*
+ 
+# .NET Core
+# User-specific files (see http://go.microsoft.com/fwlink/?LinkID=771737)
+*.userprofile-ms
+ 
+# Visual Studio Code logs
+.vscode/logs/
+ 
+# Visual Studio 2017/2019 web browser files
+.vs/
+ 
+# Uncomment if you have tasks that create the project's static files in wwwroot
+#wwwroot/
+ 
+# Microsoft Azure Build Output
+drop/
+ 
+# NPM
+node_modules/
+ 
+# Bower
+bower_components/
+ 
+# TypeScript v1.x
+*.tsbuildinfo
+ 
+# TypeScript v2.x
+tsconfig.tsbuildinfo
+ 
+# TypeScript v3.x
+*.tsconfig.tsbuildinfo
+ 
+# JavaScript & TypeScript Cache
+.idea/
+.vscode/
+ 
+# Prettier code formatter
+.prettierrc
+ 
+# Mac system files
+.DS_Store
+ 
+# Windows system files
+Thumbs.db
+ehthumbs.db
+ 
+# Folder that stores VS Code extensions
+.vscode/extensions/
+ 
+# Blazor WASM Workaround
+blazor.boot.json
+ 
+# Xamarin Studio
+*.xcuserstate
+ 
+# Visual Studio 2017 profile
+*.vssettings
+ 
+# Visual Studio 2015 cache/options directory
+.vs/
+ 
+# Uncomment if you have any MS Office Excels
+#*.xls
+ 
+# Uncomment if you have any MS Office Word documents
+#*.doc
+ 
+# Uncomment if you have any MS Office PowerPoint presentations
+#*.ppt
+ 
+# MS Office Excel macro-enabled template
+#*.xlt
+ 
+# MS Office Word template
+#*.dot
+ 
+# Uncomment if you have any MS Office Visio diagrams
+#*.vsd
+ 
+# Uncomment if you have any MS Office Publisher publications
+#*.pub
+ 
+# Uncomment if you have any MS Office Outlook items
+#*.msg
+ 
+# Uncomment if you have any MS Office unmsilent installer files
+#*.msi
+ 
+# Windows thumbnail cache files
+#*.db
+ 
+# Folder that stores VS Code extensions
+.vscode/extensions/
+ 
+# Blazor WASM Workaround
+blazor.boot.json
+ 
+# Xamarin Studio
+*.xcuserstate
+ 
+# Visual Studio 2017 profile
+*.vssettings
+ 
+# Visual Studio 2015 cache/options directory
+.vs/
+ 
+# Uncomment if you have any MS Office Excels
+#*.xls
+ 
+# Uncomment if you have any MS Office Word documents
+#*.doc
+ 
+# Uncomment if you have any MS Office PowerPoint presentations
+#*.ppt
+ 
+# MS Office Excel macro-enabled template
+#*.xlt
+ 
+# MS Office Word template
+#*.dot
+ 
+# Uncomment if you have any MS Office Visio diagrams
+#*.vsd
+ 
+# Uncomment if you have any MS Office Publisher publications
+#*.pub
+ 
+# Uncomment if you have any MS Office Outlook items
+#*.msg
+ 
+# Uncomment if you have any MS Office unmsilent installer files
+#*.msi
+ 
+# Windows thumbnail cache files
+#*.db
+ 
+# Folder for Pycharm project directories
+.idea/
+ 
+# CDS/D365 files
+ClientMetadata/
+ 
+# Visual Studio 2017/

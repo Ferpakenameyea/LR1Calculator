@@ -77,13 +77,28 @@
         {
             var result = solution.Launch(start);
             result.Dump();
-        } catch (Exception e)
+            
+            var analyzeTable = new AnalyzeTableGenerator(result).Generate();
+            Console.ForegroundColor = ConsoleColor.Green;
+            System.Console.WriteLine("==========================");
+            System.Console.WriteLine("AnalyzeTable:");
+            analyzeTable.Dump();
+        }
+        catch (NotLR1Exception e)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            System.Console.WriteLine("Something went wrong, try again");
-            System.Console.WriteLine(e);
+            System.Console.WriteLine("Not LR1 grammar!");
+            System.Console.WriteLine(e.Message);
         }
-
-        Console.ResetColor();
+        catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            System.Console.WriteLine("Something went wrong!");
+            System.Console.WriteLine(e);
+        } 
+        finally
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 }

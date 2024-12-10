@@ -203,7 +203,7 @@ public struct Symbol
     /// 此符号的值，如果是大写字母，则为非终结符，否则为终结符
     /// </summary>
     public char Value { get; init; }
-    public bool IsTerminal => char.IsLower(Value);
+    public bool IsTerminal => !char.IsUpper(Value);
 
     public override bool Equals(object? obj)
     {

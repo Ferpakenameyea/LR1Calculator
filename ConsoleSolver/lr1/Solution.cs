@@ -53,7 +53,7 @@ public class Solution
                 } 
                 else 
                 {
-                    newClosure = Closures.First(c => c.Equals(closure));
+                    newClosure = Closures.First(c => c.Equals(newClosure));
                 }
                 closure.Transitions.Add((symbol, newClosure));
             }
